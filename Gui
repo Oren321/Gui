@@ -43,7 +43,7 @@ AutoFarm:Toggle({
    end
 })
 
---Clover Event
+--Clover Event Tab
 local Clover = window:Tab({
     Name = "Clover Event",
     tabColor = Color3.fromRGB(180, 240, 67),
@@ -168,3 +168,63 @@ Clover:Toggle({
         end
     end
  })
+
+--Fish Tab
+local Fish = window:Tab({
+    Name = "Auto Fish",
+    tabColor = Color3.fromRGB(180, 240, 67),
+    Image = "rbxassetid://10709769841"
+})
+
+Fish:Label("Fishing!")
+
+local FishingSpots = {
+    "Default",
+    "Ice",
+    "Kraken",
+    "Corrupted",
+}
+
+Fish:Dropdown({
+    Name = "Select Fishing Spot",
+    Default = "Default",
+    Items = FishingSpots,
+    Multiselect = false,
+    Callback = function(Value)
+        selectedFishingSpot = Value
+    end
+})
+
+local isToggled = false
+
+Fish:Toggle({
+    Name = "Auto Fish",
+    Default = false,
+    Callback = function(var)
+        isToggled = var
+        if isToggled then
+            while isToggled do
+                local args = {
+                    [1] = selectedFishingSpot
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_Fish"):InvokeServer(unpack(args))
+                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_Success"):FireServer()
+                task.wait()
+            end
+        end
+    end
+})
+
+local isToggled = false
+
+Fish:Toggle({
+    Name = "Claim Fishing Storage Loot",
+    Default = false,
+    Callback = function(var)
+        isToggled = var
+        while isToggled do
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_FishermanClaim"):InvokeServer()
+            task.wait(5)
+        end
+    end
+})
