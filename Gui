@@ -169,14 +169,14 @@ Clover:Toggle({
     end
  })
 
---Fish Tab
-local Fish = window:Tab({
-    Name = "Auto Fish",
+--Mini Games Tab
+local MiniGames = window:Tab({
+    Name = "Mini Games",
     tabColor = Color3.fromRGB(180, 240, 67),
     Image = "rbxassetid://10709769841"
 })
 
-Fish:Label("Fishing!")
+MiniGames:Label("Fishing!")
 
 local FishingSpots = {
     "Default",
@@ -185,7 +185,7 @@ local FishingSpots = {
     "Corrupted",
 }
 
-Fish:Dropdown({
+MiniGames:Dropdown({
     Name = "Select Fishing Spot",
     Default = "Default",
     Items = FishingSpots,
@@ -197,7 +197,7 @@ Fish:Dropdown({
 
 local isToggled = false
 
-Fish:Toggle({
+MiniGames:Toggle({
     Name = "Auto Fish",
     Default = false,
     Callback = function(var)
@@ -217,7 +217,7 @@ Fish:Toggle({
 
 local isToggled = false
 
-Fish:Toggle({
+MiniGames:Toggle({
     Name = "Claim Fishing Storage Loot",
     Default = false,
     Callback = function(var)
@@ -225,6 +225,48 @@ Fish:Toggle({
         while isToggled do
             game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Fishing_FishermanClaim"):InvokeServer()
             task.wait(5)
+        end
+    end
+})
+
+MiniGames:Label("Mining!")
+
+local MiningSpots = {
+    "Dirt Ore",
+    "Stone Ore",
+    "Bronze Ore",
+    "Iron Ore",
+    "Gold Ore",
+    "Emerald Ore",
+    "Obsidian Ore",
+    "Runic Ore",
+    "Magma Ore",
+}
+
+MiniGames:Dropdown({
+    Name = "Select Mining Spot",
+    Default = "Default",
+    Items = MiningSpots,
+    Multiselect = false,
+    Callback = function(Value)
+        selectedMiningSpot = Value
+    end
+})
+
+MiniGames:Toggle({
+    Name = "Auto Mine",
+    Default = false,
+    Callback = function(var)
+        isToggled = var
+        if isToggled then
+            while isToggled do
+                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mining_SetState"):InvokeServer(unpack(args))
+                local args = {
+                    [1] = selectedMiningSpot
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Mining_Attack"):InvokeServer(unpack(args))
+                task.wait()
+            end
         end
     end
 })
